@@ -4,7 +4,7 @@ import {TaskType, Todolist} from './Todolist';
 import {v1} from 'uuid';
 // типизируем let [filter, setFilter] = useState:
 export type FilterValuesType = 'all' | 'completed' | 'active'
-export type TodolistsType = {
+export type TodoListsType = {
     id: string
     title: string
     filter: FilterValuesType
@@ -37,14 +37,19 @@ const App = () => {
         }
         setTasks([...tasks])
     }
+    // функция фильтрации получая эти параметры будет знать по id, в каком туду произошло изменение
     let changeFilter = (value: FilterValuesType, todoId: string) => {
-
+        let todolist = todoLists.find(tl => tl.id === todoId)
+        if (todolist) {
+            todolist.filter = value
+            setTodoLists([...todoLists])
+        }
     }
 // data:
-    let todoLists: Array<TodolistsType> = [
+    let [todoLists, setTodoLists] = useState<Array<TodoListsType>>([
         {id: v1(), title: ' What to learn', filter: 'active'},
         {id: v1(), title: ' What to buy', filter: 'completed'},
-    ]
+    ])
 // UI
     return (
         <div className="App">
