@@ -26,7 +26,7 @@ const App = () => {
         // добавление новой таски
         let task = {id: v1(), title: title, isDone: false}
         // новую таску, нужно добавить в нужный массив - нужный массив получаем из объекта:
-        let tasks =  tasksObject[todolistId]
+        let tasks = tasksObject[todolistId]
         // достали нужный массив и в него будем добавлять таску
         let newTasks = [task, ...tasks]
         // далее новые таски засовываем обратно в объект по ключу tasksObject[todolistId]
@@ -35,12 +35,16 @@ const App = () => {
         setTasksObject({...tasksObject})
     }
 // изменение статуса checkbox:
-    const changeStatus = (taskId: string, isDone: boolean) => {
-        let task = tasksObject.find(t => t.id === taskId)
+    const changeStatus = (taskId: string, isDone: boolean, todolistId: string) => {
+        // нашли массив тасок:
+        let tasks = tasksObject[todolistId]
+        // в этом массиве тасок нашли нужную таску
+        let task = tasks.find(t => t.id === taskId)
+        // если таска нашлась изменили...
         if (task) {
             task.isDone = isDone
+            setTasksObject({...tasksObject})
         }
-        setTasksObject([...tasksObject])
     }
     // функция фильтрации получая эти параметры будет знать по id, в каком туду произошло изменение
     let changeFilter = (value: FilterValuesType, todoId: string) => {

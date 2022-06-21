@@ -10,10 +10,10 @@ type TodoListPropsType = {
     id: string
     title: string
     tasks: Array<TaskType>
-    removeTask: (id: string) => void
+    removeTask: (id: string,todolistId: string) => void
     changeFilter: (value: FilterValuesType, todoId: string) => void
-    addTask: (title: string) => void
-    changeTaskStatus: (taskId: string, isDone: boolean) => void
+    addTask: (title: string, todolistId: string) => void
+    changeTaskStatus: (taskId: string, isDone: boolean, todolistId: string) => void
     filter: FilterValuesType
 }
 // TODO:
@@ -25,7 +25,7 @@ export function Todolist(props: TodoListPropsType) {
     // функция добавления "таски":
     const addTask = () => {
         if (title.trim() !== '') {
-            props.addTask(title.trim())
+            props.addTask(title.trim(), props.id)
             setTitle('')
         } else {
             setError('Title is required')
@@ -40,7 +40,7 @@ export function Todolist(props: TodoListPropsType) {
         setError('')
         // логика на нажатие Enter:
         if (e.charCode === 13) {
-            props.addTask(title)
+            props.addTask(title.trim(), props.id)
             setTitle('')
         }
     }
@@ -72,10 +72,10 @@ export function Todolist(props: TodoListPropsType) {
                 <ul>
                     {props.tasks.map((t) => {
                         // удаление "таски"
-                        const onRemoveHandler = () => props.removeTask(t.id)
+                        const onRemoveHandler = () => props.removeTask(t.id, props.id)
                         // изменение статуса инпута его checkbox:
                         const onChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-                            props.changeTaskStatus(t.id, e.currentTarget.checked)
+                            props.changeTaskStatus(t.id, e.currentTarget.checked, props.id)
                         }
 // если таска выполнена делаем <li> полупрозрачной:
                         return <li key={t.id} className={t.isDone === true ? 'is-done' : ''}>
