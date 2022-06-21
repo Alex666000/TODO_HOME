@@ -11,31 +11,28 @@ export type TodoListsType = {
 }
 
 const App = () => {
-    // state таски
-    let [tasks, setTasks] = useState<Array<TaskType>>([
-        {id: v1(), title: 'HTML&&CSS', isDone: true},
-        {id: v1(), title: 'JS', isDone: false},
-        {id: v1(), title: 'React', isDone: true},
-        {id: v1(), title: 'Redux', isDone: true},
-        {id: v1(), title: 'GraphQl', isDone: true},
-    ])
     // удаления таски:
-    const removeTask = (id: string) => {
-        let filtredTasks = tasks.filter((t) => t.id !== id)
-        setTasks(filtredTasks)
+    const removeTask = (id: string, todolistId: string) => {
+        // находим нужный массив:
+        let tasks = tasksObject[todolistId]
+        // получаем в этом массиве отфильрованные таски:
+        let filtredTasks = tasks.filter(t => t.id != id)
+        //  в этом объекте заменить таски которые достали заменить отфильтрованными тасками:
+        tasksObject[todolistId] = filtredTasks
+        setTasksObject({...tasksObject})
     }
     let addTask = (title: string) => {
         let newTask = {id: v1(), title: title, isDone: false}
-        let newTasks = [newTask, ...tasks]
-        setTasks(newTasks)
+        let newTasks = [newTask, ...tasksObject]
+        setTasksObject(newTasks)
     }
 // изменение статуса checkbox:
     const changeStatus = (taskId: string, isDone: boolean) => {
-        let task = tasks.find(t => t.id === taskId)
+        let task = tasksObject.find(t => t.id === taskId)
         if (task) {
             task.isDone = isDone
         }
-        setTasks([...tasks])
+        setTasksObject([...tasksObject])
     }
     // функция фильтрации получая эти параметры будет знать по id, в каком туду произошло изменение
     let changeFilter = (value: FilterValuesType, todoId: string) => {
@@ -46,22 +43,40 @@ const App = () => {
         }
     }
 // data:
+    let todolistId1 = v1() // skd-34-ff
+    let todolistId2 = v1()
+// data:
     let [todoLists, setTodoLists] = useState<Array<TodoListsType>>([
         {id: v1(), title: ' What to learn', filter: 'active'},
         {id: v1(), title: ' What to buy', filter: 'completed'},
     ])
+// data:
+    let [tasksObject, setTasksObject] = useState({
+        [todolistId1]: [
+            {id: v1(), title: 'HTML&&CSS', isDone: true},
+            {id: v1(), title: 'JS', isDone: false},
+            {id: v1(), title: 'React', isDone: true},
+            {id: v1(), title: 'Redux', isDone: true},
+            {id: v1(), title: 'GraphQl', isDone: true},
+        ],
+        [todolistId2]: [
+            {id: v1(), title: 'Book', isDone: false},
+            {id: v1(), title: 'Milk', isDone: false},
+        ],
+    })
+
 // UI
     return (
         <div className="App">
             {/*пробегаемся и отрисовываем разные туду: */}
             {todoLists.map((tl) => {
                 // логика фильтрации:
-                let tasksForTodoList = tasks
+                let tasksForTodoList = tasksObject[tl.id]
                 if (tl.filter === 'completed') {
-                    tasksForTodoList = tasks.filter(t => t.isDone)
+                    tasksForTodoList = tasksForTodoList.filter(t => t.isDone)
                 }
                 if (tl.filter === 'active') {
-                    tasksForTodoList = tasks.filter(t => !t.isDone)
+                    tasksForTodoList = tasksForTodoList.filter(t => !t.isDone)
                 }
                 return <Todolist
                     id={tl.id}
