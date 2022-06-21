@@ -21,10 +21,18 @@ const App = () => {
         tasksObject[todolistId] = filtredTasks
         setTasksObject({...tasksObject})
     }
-    let addTask = (title: string) => {
-        let newTask = {id: v1(), title: title, isDone: false}
-        let newTasks = [newTask, ...tasksObject]
-        setTasksObject(newTasks)
+    // добавление таски:
+    let addTask = (title: string, todolistId: string) => {
+        // добавление новой таски
+        let task = {id: v1(), title: title, isDone: false}
+        // новую таску, нужно добавить в нужный массив - нужный массив получаем из объекта:
+        let tasks =  tasksObject[todolistId]
+        // достали нужный массив и в него будем добавлять таску
+        let newTasks = [task, ...tasks]
+        // далее новые таски засовываем обратно в объект по ключу tasksObject[todolistId]
+        tasksObject[todolistId] = newTasks
+        // далее измененный  tasksObject отправляем в setTasksObject
+        setTasksObject({...tasksObject})
     }
 // изменение статуса checkbox:
     const changeStatus = (taskId: string, isDone: boolean) => {
